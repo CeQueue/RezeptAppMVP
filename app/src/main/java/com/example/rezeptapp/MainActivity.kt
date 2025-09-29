@@ -12,18 +12,34 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import com.example.rezeptapp.ui.theme.RezeptAppTheme
+import androidx.compose.foundation.layout.Box
+import androidx.compose.ui.Alignment
+import androidx.compose.runtime.remember
+
+
 
 class MainActivity : ComponentActivity() {
+
+    companion object {
+        init {
+            // Name muss mit add_library(...) in CMake übereinstimmen
+            System.loadLibrary("hellondk")
+        }
+    }
+
+    external fun stringFromJNI(): String
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
             RezeptAppTheme {
                 Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-                    Greeting(
-                        name = "Android",
-                        modifier = Modifier.padding(innerPadding)
-                    )
+                    Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                        // Wichtig: remember, damit nicht bei jedem Recompose JNI aufgerufen wird
+                        val msg = remember { stringFromJNI() }  // -> "NDK OK" aus C++
+                        Text(text = msg, modifier = Modifier.padding(innerPadding))
+                    }
                 }
             }
         }

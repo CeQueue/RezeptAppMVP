@@ -5,6 +5,7 @@ plugins {
 }
 
 android {
+
     namespace = "com.example.rezeptapp"
     compileSdk = 36
 
@@ -16,6 +17,22 @@ android {
         versionName = "1.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+        // nur ARM64 (MVP einfacher & kleiner)
+        ndk { abiFilters += listOf("arm64-v8a","x86_64")}
+    }
+
+    buildFeatures { compose = true }
+    composeOptions { kotlinCompilerExtensionVersion = "1.5.+" }
+
+    // HIER CMake anbinden (auf deine Datei zeigen)
+    externalNativeBuild {
+        cmake { path = file("src/main/cpp/CMakeLists.txt") }
+    }
+
+    packaging {
+        // native libs modern packen
+        jniLibs.useLegacyPackaging = false
+        resources.excludes += setOf("META-INF/**")
     }
 
     buildTypes {
