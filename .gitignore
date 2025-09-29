@@ -24,3 +24,4 @@ local.properties
 *.jks
 app/src/main/assets/models/
 app/src/main/assets/onnx/
+.idea/
